@@ -37,6 +37,8 @@ class Order {
 
   textAlign(LEFT, TOP);
   textSize(12);
+  
+  float newY = 0;
 
   for (int i = 0; i < lines.length; i++) {
     // Alternate background color
@@ -47,11 +49,17 @@ class Order {
     }
 
     float lineY = y + 10 + i * 20;
+    noStroke();
     rect(x, lineY, 135, 20); // background for each line
 
     fill(0);
     text(lines[i], x + 5, lineY+5);
+    
+    newY=lineY-40;
   }
+    stroke(0);
+    noFill();
+    rect(x, y+10, 135, newY);
 }
 
 }

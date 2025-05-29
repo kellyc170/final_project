@@ -27,31 +27,31 @@ class Customer {
   }
 }
 
-//Order myOrder;
-//Customer myCustomer;
+Order myOrder;
+Customer myCustomer;
 
-//void setup() {
-//  size(600, 300);
-//  background(240);
+void setup() {
+  size(600, 300);
+  background(240);
 
   // Sample order
-//  String[] toppings = {"Sprinkles", "Cherry"};
-//  myOrder = new Order("Large", "Vanilla", "Banana", 2, toppings);
-//  myOrder.orderNumber = 1;
+  String[] toppings = {"Sprinkles", "Cherry"};
+  myOrder = new Order("Large", "Vanilla", "Banana", 2, toppings);
+  myOrder.orderNumber = 1;
 
   // Create customer at left edge, walking to x = 300
-//  myCustomer = new Customer(myOrder, 50, 200, 300);
-//}
+  myCustomer = new Customer(myOrder, 50, 200, 300);
+}
 
-//void draw() {
-//  background(240);
+void draw() {
+  background(240);
 
   // Move and display the customer
-//  myCustomer.moveToTarget();
-//  myCustomer.display();
+  myCustomer.moveToTarget();
+  myCustomer.display();
 
   // Once the customer arrives, show their order
-//  if (myCustomer.hasReachedTarget) {
-//    myCustomer.order.display();
-//  }
-//}
+  if (myCustomer.hasReachedTarget) {
+    myCustomer.order.display();
+  }
+}
