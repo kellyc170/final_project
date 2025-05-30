@@ -15,6 +15,30 @@ class Order {
     this.mixLevel = mixLevel;
     this.toppings = toppings;
   }
+  
+  int getOrderNumber() {
+    return orderNumber;
+  }
+  
+  String getCupSize() {
+    return cupSize;
+  }
+  
+  String getSyrup() {
+    return syrup;
+  }
+  
+  String getFlavor() {
+    return flavor;
+  }
+  
+  int getMixLevel() {
+    return mixLevel;
+  }
+  
+  String[] getToppings() {
+    return toppings;
+  }
 
   void display() {
   float x = 50;
