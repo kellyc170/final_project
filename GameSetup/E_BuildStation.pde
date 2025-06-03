@@ -1,89 +1,112 @@
-//class BuildStation extends Station {
-//  ArrayList<Sundae> sundaes;
-//  String selectedCup = "";
-//  String selectedSyrup = "";
-//  String selectedFlavor = "";
+class BuildStation extends Station {
+  ArrayList<Sundae> sundaes;
 
-//  BuildStation(ArrayList<Sundae> sundaes) {
-//    super("Build");
-//   this.sundaes = sundaes;
-//  }
+  ArrayList<Button> cupSizeButtons;
+  ArrayList<Button> flavorButtons;
+  ArrayList<Button> syrupButtons;
 
-//  void update() {
-    // Nothing automatic for now
-//  }
+  String selectedCupSize = "Medium";    // Default selected
+  String selectedFlavor = "Vanilla";
+  String selectedSyrup = "Chocolate";
 
-//  void display() {
-//    background(230, 255, 230); // light green
-//    fill(0);
- //   textSize(24);
- //   text("Build Station", 30, 30);
+  BuildStation(ArrayList<Sundae> sundaes) {
+    super("Build");
+    this.sundaes = sundaes;
 
- //   textSize(16);
- //   text("Choose Cup:", 30, 80);
- //   drawButton(30, 110, "Small", selectedCup);
-  //  drawButton(120, 110, "Large", selectedCup);
+    cupSizeButtons = new ArrayList<Button>();
+    flavorButtons = new ArrayList<Button>();
+    syrupButtons = new ArrayList<Button>();
 
-//    text("Choose Syrup:", 30, 160);
-//    drawButton(30, 190, "Vanilla", selectedSyrup);
-//    drawButton(120, 190, "Chocolate", selectedSyrup);
+    setupOptionButtons();
+  }
 
-//    text("Choose Flavor:", 30, 240);
-//    drawButton(30, 270, "Strawberry", selectedFlavor);
-//    drawButton(120, 270, "Banana", selectedFlavor);
+  void setupOptionButtons() {
+    float btnWidth = 120;
+    float btnHeight = 40;
+    float spacing = 15;
 
-//    drawSubmitButton();
-//  }
+    float startX = 20;
+    float startY = 60;
 
-//  void drawButton(float x, float y, String label, String selected) {
-//    if (label.equals(selected)) {
-//      fill(150, 200, 255);
-//    } else {
-//      fill(200);
-//    }
-//    rect(x, y, 80, 30);
-//    fill(0);
-//    textAlign(CENTER, CENTER);
-//    text(label, x + 40, y + 15);
-//  }
+    // Cup Size buttons
+    String[] cupSizes = {"Small", "Medium", "Large"};
+    for (int i = 0; i < cupSizes.length; i++) {
+      float y = startY + i * (btnHeight + spacing);
+      cupSizeButtons.add(new Button(startX, y, btnWidth, btnHeight, cupSizes[i]));
+    }
 
-//  void drawSubmitButton() {
-//    if (canSubmit()) {
-//      fill(0, 200, 0);
-//    } else {
-//      fill(150);
-//    }
-//    rect(30, 340, 170, 40);
-//    fill(255);
-//    textAlign(CENTER, CENTER);
-//    text("Build Sundae", 30 + 85, 340 + 20);
-//  }
+    // Flavor buttons
+    startY += cupSizes.length * (btnHeight + spacing) + 40;
+    String[] flavors = {"Vanilla", "Chocolate", "Strawberry"};
+    for (int i = 0; i < flavors.length; i++) {
+      float y = startY + i * (btnHeight + spacing);
+      flavorButtons.add(new Button(startX, y, btnWidth, btnHeight, flavors[i]));
+    }
 
-//  boolean canSubmit() {
-//    return !selectedCup.equals("") && !selectedSyrup.equals("") && !selectedFlavor.equals("");
-//  }
+    // Syrup buttons
+    startY += flavors.length * (btnHeight + spacing) + 40;
+    String[] syrups = {"Chocolate", "Caramel", "Strawberry"};
+    for (int i = 0; i < syrups.length; i++) {
+      float y = startY + i * (btnHeight + spacing);
+      syrupButtons.add(new Button(startX, y, btnWidth, btnHeight, syrups[i]));
+    }
+  }
 
-//  void handleClick(float mx, float my) {
-    // Cup
-//    if (over(mx, my, 30, 110)) selectedCup = "Small";
-//    if (over(mx, my, 120, 110)) selectedCup = "Large";
+  void update() {
+    // edit later
+  }
 
-    // Syrup
-//    if (over(mx, my, 30, 190)) selectedSyrup = "Vanilla";
-//    if (over(mx, my, 120, 190)) selectedSyrup = "Chocolate";
+  void display() {
+    background(230, 255, 230);
+    fill(0);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text("Build Station", width / 2, 40);
 
-    // Flavor
-//    if (over(mx, my, 30, 270)) selectedFlavor = "Strawberry";
-//    if (over(mx, my, 120, 270)) selectedFlavor = "Banana";
+    // Display option buttons
+    displayOptionButtons(cupSizeButtons, selectedCupSize);
+    displayOptionButtons(flavorButtons, selectedFlavor);
+    displayOptionButtons(syrupButtons, selectedSyrup);
 
-    // Submit button
-//    if (canSubmit() && over(mx, my, 30, 340)) {
-//      sundaes.add(new Sundae(selectedCup, selectedSyrup, selectedFlavor, new String[]{}, 100));
-//      selectedCup = selectedSyrup = selectedFlavor = ""; // reset
-//    }
-//  }
+    displayNavButtons();
+  }
 
-//  boolean over(float mx, float my, float x, float y) {
-//    return mx > x && mx < x + 80 && my > y && my < y + 30;
-//  }
-//}
+  void displayOptionButtons(ArrayList<Button> buttons, String selected) {
+    for (Button b : buttons) {
+      if (b.label.equals(selected)) {
+        stroke(255, 0, 0);  // Red border if selected
+        strokeWeight(4);
+      } else {
+        noStroke();
+      }
+      b.display();
+      noStroke();
+    }
+  }
+
+  void handleClick(float mx, float my) {
+    // Check cup size buttons
+    for (Button b : cupSizeButtons) {
+      if (b.isClicked(mx, my)) {
+        selectedCupSize = b.label;
+        return;
+      }
+    }
+
+    // Check flavor buttons
+    for (Button b : flavorButtons) {
+      if (b.isClicked(mx, my)) {
+        selectedFlavor = b.label;
+        return;
+      }
+    }
+
+    // Check syrup buttons
+    for (Button b : syrupButtons) {
+      if (b.isClicked(mx, my)) {
+        selectedSyrup = b.label;
+        return;
+      }
+    }
+  }
+}

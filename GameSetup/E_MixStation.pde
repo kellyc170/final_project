@@ -1,48 +1,101 @@
-//class MixStation extends Station {
-//  ArrayList<Sundae> sundaes;
+class MixStation extends Station {
+  ArrayList<Sundae> sundaes;
 
-//  MixStation(ArrayList<Sundae> sundaes) {
-//    super("Mix");
-//    this.sundaes = sundaes;
-//  }
+  // Mix intensity options and buttons
+  String[] mixTypes = {"Light", "Medium", "Heavy"};
+  ArrayList<Button> mixButtons;
 
-//  void update() {
-    // Simulate mixing for each sundae
-//    for (Sundae s : sundaes) {
-//      if (!s.isMixed()) {
-//        s.mixProgress += 0.5; // Adjust speed if needed
-//      }
-//    }
-//  }
+  int selectedMixIndex = -1; 
+  float mixProgress = 0;
 
-//  void display() {
-//    background(230, 230, 255); // light blue background
-//    fill(0);
-//    textSize(24);
- //   text("Mix Station", 30, 30);
+  // Speeds for each mix intensity
+  float[] mixSpeeds = {0.002f, 0.005f, 0.01f};
 
-    // Draw mix spots with progress bars
- //   for (int i = 0; i < sundaes.size(); i++) {
- //     Sundae s = sundaes.get(i);
- //     float x = 100 + i * 200;
- //     float y = 200;
+  MixStation(ArrayList<Sundae> sundaes) {
+    super("Mix");
+    this.sundaes = sundaes;
 
-      // Cup placeholder
-  //    fill(255);
- //     rect(x, y, 60, 100);
+    mixButtons = new ArrayList<Button>();
+    float btnWidth = 100;
+    float btnHeight = 40;
+    float spacing = 20;
+    float totalWidth = mixTypes.length * btnWidth + (mixTypes.length - 1) * spacing;
+    float startX = (width - totalWidth) / 2;
+    float y = 120;
 
-      // Mix progress bar
-//      fill(180);
-//      rect(x, y + 110, 60, 10); // full bar background
-//      fill(0, 150, 0);
-//     float progressWidth = map(s.mixProgress, 0, s.targetMixTime, 0, 60);
-//      rect(x, y + 110, progressWidth, 10); // actual progress
+    for (int i = 0; i < mixTypes.length; i++) {
+      float x = startX + i * (btnWidth + spacing);
+      Button b = new Button(x, y, btnWidth, btnHeight, mixTypes[i]);
+      mixButtons.add(b);
+    }
+  }
 
-      // Text
- //     fill(0);
- //     textSize(12);
- //     textAlign(CENTER);
- //     text("Mix: " + int(s.mixProgress) + "/" + s.targetMixTime, x + 30, y + 130);
- //   }
- // }
-//}
+  void update() {
+    if (selectedMixIndex != -1 && mixProgress < 1.0) {
+      mixProgress += mixSpeeds[selectedMixIndex];
+      if (mixProgress > 1.0) {
+        mixProgress = 1.0;
+      }
+    }
+  }
+
+  void display() {
+    background(230, 230, 255);
+    fill(0);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text("Mix Station", width/2, 80);
+
+    displayMixProgressBar();
+
+    // Display mix type buttons
+    for (int i = 0; i < mixButtons.size(); i++) {
+      Button b = mixButtons.get(i);
+      if (i == selectedMixIndex) {
+        // Highlight selected button
+        stroke(255, 0, 0);
+        strokeWeight(4);
+      } else {
+        noStroke();
+      }
+      b.display();
+    }
+
+    displayNavButtons();
+  }
+
+  void displayMixProgressBar() {
+    float barX = width * 0.1f;
+    float barY = 50;
+    float barWidth = width * 0.8f;
+    float barHeight = 25;
+
+    stroke(0);
+    strokeWeight(2);
+    fill(200);
+    rect(barX, barY, barWidth, barHeight, 10);
+
+    fill(50, 100, 255);
+    noStroke();
+    rect(barX, barY, barWidth * mixProgress, barHeight, 10);
+
+    fill(0);
+    textSize(14);
+    textAlign(CENTER, CENTER);
+    text(int(mixProgress * 100) + "% Mixed", barX + barWidth / 2, barY + barHeight / 2);
+  }
+
+  void handleClick(float mx, float my) {
+    // Check clicks on mix type buttons
+    for (int i = 0; i < mixButtons.size(); i++) {
+      Button b = mixButtons.get(i);
+      if (b.isClicked(mx, my)) {
+        selectedMixIndex = i;
+        mixProgress = 0;  // reset progress when new mix type selected
+        return;
+      }
+    }
+
+    // add more mix stuff later
+  }
+}

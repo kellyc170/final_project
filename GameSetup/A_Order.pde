@@ -1,8 +1,8 @@
 class Order {
 
-  int orderNumber;
-  String cupSize;    // e.g., "Small", "Medium", "Large"
-  String syrup;      // e.g., "Vanilla", "Chocolate"
+  int orderNumber = 1;
+  String cupSize;    //"Small", "Medium", "Large"
+  String syrup;      // "Vanilla", "Chocolate"
   String flavor;     // e.g., "Strawberry", "Banana"
   int mixLevel;   
   String[] toppings; // e.g., {"Cherry", "Sprinkles"}
@@ -41,66 +41,89 @@ class Order {
   }
 
   void display() {
-  float x = 50;
-  float y = 50;
+  float padding = 20;
+  float boxWidth = 200;
   
+  // Place top right: x near width - padding - boxWidth
+  float x = width - padding - boxWidth;
+  float y = padding;
+
   ArrayList<String> linesList = new ArrayList<String>();
   linesList.add("Order #" + orderNumber);
-  
   for (int i = 0; i < toppings.length; i++) {
     linesList.add("Topping: " + toppings[i]);
   }
-  
   linesList.add("Flavor: " + flavor);
   linesList.add("Syrup: " + syrup);
   linesList.add("Mix Level: " + mixLevel);
-  linesList.add("Cup Size: " + cupSize); // last line
+  linesList.add("Cup Size: " + cupSize);
+
+  String[] lines = linesList.toArray(new String[0]);
+
+  textFont(createFont("Comic Sans MS", 16));
+  textSize(16);
+  textLeading(22);
+  textAlign(LEFT, TOP);
+
+  float lineHeight = 28;
+
+  for (int i = 0; i < lines.length; i++) {
+    if (i % 2 == 0) {
+      fill(255, 245, 255); // very light pink
+    } else {
+      fill(255, 220, 240); // light pink
+    }
+    noStroke();
+    float lineY = y + i * lineHeight;
+    rect(x + 5, lineY, boxWidth - 10, lineHeight);
+
+    fill(80, 30, 60);
+    text(lines[i], x + 10, lineY + 6);
+  }
+}
+
+
+ void display(float x, float y) {
+  ArrayList<String> linesList = new ArrayList<String>();
+  linesList.add("Order #" + orderNumber);
+
+  for (int i = 0; i < toppings.length; i++) {
+    linesList.add("Topping: " + toppings[i]);
+  }
+
+  linesList.add("Flavor: " + flavor);
+  linesList.add("Syrup: " + syrup);
+  linesList.add("Mix Level: " + mixLevel);
+  linesList.add("Cup Size: " + cupSize);
 
   // Convert list to array
   String[] lines = linesList.toArray(new String[0]);
 
+  // Set font
+  textFont(createFont("Comic Sans MS", 16));
+  textSize(16);
+  textLeading(22);  // More line spacing
   textAlign(LEFT, TOP);
-  textSize(12);
-  
-  float newY = 0;
+
+  float lineHeight = 28;  // Height of each line box
+  float boxWidth = 200;   // Make wider to better fit text and look balanced
+
 
   for (int i = 0; i < lines.length; i++) {
-    // Alternate background color
+    // Alternate pastel fill for lines
     if (i % 2 == 0) {
-      fill(255); // white
+      fill(255, 245, 255); // very light pink
     } else {
-      fill(255, 200, 230); //pink
+      fill(255, 220, 240); // light pink
     }
 
-    float lineY = y + 10 + i * 20;
     noStroke();
-    rect(x, lineY, 135, 20); // background for each line
+    float lineY = y + i * lineHeight;
+    rect(x - 5, lineY, boxWidth - 10, lineHeight);
 
-    fill(0);
-    text(lines[i], x + 5, lineY+5);
-    
-    newY=lineY-40;
+    fill(80, 30, 60);
+    text(lines[i], x, lineY + 6);
   }
-    stroke(0);
-    noFill();
-    rect(x, y+10, 135, newY);
 }
 
 }
-
-//Order myOrder;
-
-//void setup() {
-//  size(300, 250);
-//  background(240);
-
-  // Create an example order
-//  String[] toppings = {"Cherry", "Sprinkles", "Whipped Cream"};
-//  myOrder = new Order("Medium", "Vanilla", "Strawberry", 2, toppings);
-//  myOrder.orderNumber = 1;
-//}
-
-//void draw() {
- // background(240);
- // myOrder.display();
-//}
