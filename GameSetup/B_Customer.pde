@@ -1,5 +1,6 @@
 class Customer {
   Order order;
+  String name;
   float x, y;           // current position on screen
   float targetX, targetY; // target position customer is walking to
   PImage img;     
