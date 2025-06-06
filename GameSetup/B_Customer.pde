@@ -1,8 +1,8 @@
 class Customer {
   Order order;
   String name;
-  float x, y;           // current position on screen
-  float targetX, targetY; // target position customer is walking to
+  float x, y;           
+  float targetX, targetY; 
   PImage img;     
   boolean hasReachedTarget;
 
@@ -10,14 +10,13 @@ class Customer {
     this.order = order;
     this.x = startX;
     this.y = startY;
-    this.targetX = width / 2;  // Center horizontally
+    this.targetX = width / 2;
     this.targetY = startY;     
     this.hasReachedTarget = false;
     this.img = loadImage("chuck.png");
   }
 
   void moveToTarget() {
-    // Move horizontally toward targetX
     if (abs(x - targetX) > 1) {
       if (x < targetX) {
         x += 2; // move right

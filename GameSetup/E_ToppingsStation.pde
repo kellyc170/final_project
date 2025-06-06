@@ -41,6 +41,9 @@ class ToppingsStation extends Station {
     }
 
     displayNavButtons();
+    if (game.selectedCustomer != null) {
+    game.selectedCustomer.order.display(width - 220, 20);
+    }
   }
 
   void update() {

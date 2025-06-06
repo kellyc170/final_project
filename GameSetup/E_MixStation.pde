@@ -1,14 +1,12 @@
 class MixStation extends Station {
   ArrayList<Sundae> sundaes;
 
-  // Mix intensity options and buttons
   String[] mixTypes = {"Light", "Medium", "Heavy"};
   ArrayList<Button> mixButtons;
 
   int selectedMixIndex = -1; 
   float mixProgress = 0;
 
-  // Speeds for each mix intensity
   float[] mixSpeeds = {0.002f, 0.005f, 0.01f};
 
   MixStation(ArrayList<Sundae> sundaes) {
@@ -48,25 +46,26 @@ class MixStation extends Station {
 
     displayMixProgressBar();
 
-    // Display mix type buttons
     for (int i = 0; i < mixButtons.size(); i++) {
       Button b = mixButtons.get(i);
       if (i == selectedMixIndex) {
-        // Highlight selected button
         stroke(255, 0, 0);
         strokeWeight(4);
       } else {
         noStroke();
       }
-      b.display();
+      b.display(mouseX, mouseY);
     }
 
     displayNavButtons();
+    if (game.selectedCustomer != null) {
+    game.selectedCustomer.order.display(width - 220, 20);
+    }
   }
 
   void displayMixProgressBar() {
     float barX = width * 0.1f;
-    float barY = 50;
+    float barY = 200;
     float barWidth = width * 0.8f;
     float barHeight = 25;
 
@@ -86,16 +85,14 @@ class MixStation extends Station {
   }
 
   void handleClick(float mx, float my) {
-    // Check clicks on mix type buttons
     for (int i = 0; i < mixButtons.size(); i++) {
       Button b = mixButtons.get(i);
       if (b.isClicked(mx, my)) {
         selectedMixIndex = i;
-        mixProgress = 0;  // reset progress when new mix type selected
+        mixProgress = 0;
         return;
       }
     }
-
-    // add more mix stuff later
+    // add more mix graphics later
   }
 }
