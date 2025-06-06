@@ -190,9 +190,10 @@ class BuildStation extends Station {
     );
   
     if (!selectedFlavor.equals("") && !selectedSyrup.equals("")) {
-      float drizzleTop = topY+20;
-      float drizzleLeft = cupX - 5;
-      float drizzleRight = cupX+3; //fix
+      float drizzleX1 = cupX-30;
+      float drizzleX2 = cupX+45;
+      float drizzleY1 = topY-75;
+      float drizzleY2 = topY-60;
   
       strokeWeight(3);
       noFill();
@@ -207,7 +208,8 @@ class BuildStation extends Station {
           stroke(#CB0285);
           break;
       }
-      //add syrup drizzle graphics
+      line(drizzleX1, drizzleY1, drizzleX2, drizzleY2); //top drizzle
+      line(drizzleX1-32, drizzleY1+45, drizzleX2+10, drizzleY2+20); //middle drizzle
     }
   }
 }
