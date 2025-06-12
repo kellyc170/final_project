@@ -1,17 +1,17 @@
 class BuildStation extends Station {
   ArrayList<Sundae> sundaes;
-
+  Setup game;
   ArrayList<Button> cupSizeButtons;
   ArrayList<Button> flavorButtons;
   ArrayList<Button> syrupButtons;
-
   String selectedCupSize = "";
   String selectedFlavor = "";
   String selectedSyrup = "";
 
-  BuildStation(ArrayList<Sundae> sundaes) {
+  BuildStation(ArrayList<Sundae> sundaes, Setup game) {
     super("Build");
     this.sundaes = sundaes;
+    this.game = game;
 
     cupSizeButtons = new ArrayList<Button>();
     flavorButtons = new ArrayList<Button>();
@@ -84,8 +84,8 @@ class BuildStation extends Station {
       game.selectedCustomer.order.display(width - 220, 20);
     }
 
-    if (!selectedCupSize.equals("")) {
-      drawSelectedCupVisual();
+    if (game.selectedSundae != null) {
+      game.selectedSundae.display(width / 2, height / 2 + 100);  // Adjust coords as needed
     }
   }
 
@@ -103,113 +103,43 @@ class BuildStation extends Station {
   }
 
   void handleClick(float mx, float my) {
+    boolean updated = false;
+  
     for (Button b : cupSizeButtons) {
       if (b.isClicked(mx, my)) {
         selectedCupSize = b.label;
-        return;
-      }
-    }
-    for (Button b : flavorButtons) {
-      if (b.isClicked(mx, my)) {
-        selectedFlavor = b.label;
-        return;
-      }
-    }
-    for (Button b : syrupButtons) {
-      if (b.isClicked(mx, my)) {
-        selectedSyrup = b.label;
-        return;
-      }
-    }
-  }
-
-  void drawSelectedCupVisual() {
-    if (selectedCupSize.equals("")) return;
-  
-    float cupX = width / 2 - 30;
-    float cupY = height / 2 + 70;
-  
-    float cupWidth, cupHeight;
-    switch (selectedCupSize) {
-      case "S":
-        cupWidth = 120;
-        cupHeight = 100;
+        updated = true;
         break;
-      case "M":
-        cupWidth = 140;
-        cupHeight = 120;
-        break;
-      case "L":
-        cupWidth = 160;
-        cupHeight = 140;
-        break;
-      default:
-        cupWidth = 120;
-        cupHeight = 100;
-    }
-
-    float topWidth = cupWidth;
-    float bottomWidth = cupWidth * 0.6;
-  
-    float topX1 = cupX - topWidth / 2;
-    float topX2 = cupX + topWidth / 2;
-    float bottomX1 = cupX - bottomWidth / 2;
-    float bottomX2 = cupX + bottomWidth / 2;
-  
-    float topY = cupY - cupHeight / 2;
-    float bottomY = cupY + cupHeight / 2;
-  
-    if (!selectedFlavor.equals("")) {
-      float scoopY = topY + 5;
-      float scoopWidth = topWidth-10;
-      float scoopHeight = scoopWidth * 1.4;
-  
-      switch (selectedFlavor) {
-        case "Vanilla":
-          fill(#FAF6D1);
-          break;
-        case "Chocolate":
-          fill(#673500);
-          break;
-        case "Strawberry":
-          fill(#FA6FA9);
-          break;
       }
-  
-      noStroke();
-      ellipse(cupX, scoopY, scoopWidth, scoopHeight);
     }
-  
-    fill(200);
-    noStroke();
-    quad(
-      topX1, topY,       // top left
-      topX2, topY,       // top right
-      bottomX2, bottomY, // bottom right
-      bottomX1, bottomY  // bottom left
-    );
-  
-    if (!selectedFlavor.equals("") && !selectedSyrup.equals("")) {
-      float drizzleX1 = cupX-30;
-      float drizzleX2 = cupX+45;
-      float drizzleY1 = topY-75;
-      float drizzleY2 = topY-60;
-  
-      strokeWeight(3);
-      noFill();
-      switch (selectedSyrup) {
-        case "Chocolate":
-          stroke(#5A0F00);
+    if (!updated) {
+      for (Button b : flavorButtons) {
+        if (b.isClicked(mx, my)) {
+          selectedFlavor = b.label;
+          updated = true;
           break;
-        case "Caramel":
-          stroke(#CB8500);
-          break;
-        case "Strawberry":
-          stroke(#CB0285);
-          break;
+        }
       }
-      line(drizzleX1, drizzleY1, drizzleX2, drizzleY2); //top drizzle
-      line(drizzleX1-32, drizzleY1+45, drizzleX2+10, drizzleY2+20); //middle drizzle
+    }
+    if (!updated) {
+      for (Button b : syrupButtons) {
+        if (b.isClicked(mx, my)) {
+          selectedSyrup = b.label;
+          updated = true;
+          break;
+        }
+      }
+    }
+    if (updated) {
+      if (game.selectedSundae == null) {
+        Order tempOrder = new Order(0, selectedCupSize, selectedSyrup, selectedFlavor, 0, new String[0]);
+        game.selectedSundae = new Sundae(tempOrder);
+        sundaes.add(game.selectedSundae);
+      } else {
+        game.selectedSundae.cupSize = selectedCupSize;
+        game.selectedSundae.flavor = selectedFlavor;
+        game.selectedSundae.syrup = selectedSyrup;
+      }
     }
   }
 }
