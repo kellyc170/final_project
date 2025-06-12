@@ -1,8 +1,11 @@
 class Button {
   float x, y, w, h;
   String label;
-  String shapeType;  // rectangle, square, circle, oval
+  String shapeType;
   color bgColor;
+  PFont verdanaFont;
+  PFont impactFont;
+  private PImage img;
 
   Button(float x, float y, float w, float h, String label) {
     this(x, y, w, h, label, "rectangle", color(200));
@@ -16,6 +19,17 @@ class Button {
     this.label = label;
     this.shapeType = shapeType.toLowerCase();
     this.bgColor = bgColor;
+    verdanaFont = createFont("Verdana", 50);
+    impactFont = createFont("Impact", 25);
+  }
+  
+  Button(float x, float y, float w, float h, String label, String shapeType, color bgColor, PImage img) {
+    this(x, y, w, h, label, shapeType, bgColor);
+    this.img = img;
+  }
+  
+  void setImage(PImage img) {
+    this.img = img;
   }
 
   void display(float mx, float my) {
@@ -24,17 +38,23 @@ class Button {
       fillColor = color(max(red(bgColor) - 40, 0), max(green(bgColor) - 40, 0), max(blue(bgColor) - 40, 0));
     }
 
-    fill(fillColor);
-    stroke(0);
-    strokeWeight(2);
-    textFont(createFont("Impact", 100));
+    noStroke();
 
-    switch(shapeType) {
+    if (shapeType.equals("oval")) {
+      fill(0, 0, 0, 80);
+      ellipseMode(CENTER);
+      ellipse(x + w / 2 + 5, y + h / 2 + 5, w, h);
+    }
+
+    fill(fillColor);
+    switch (shapeType) {
       case "circle":
         ellipseMode(CENTER);
         ellipse(x, y, w, h);
         break;
       case "square":
+        stroke(0);
+        strokeWeight(1);
         rectMode(CORNER);
         rect(x, y, w, h);
         break;
@@ -44,28 +64,44 @@ class Button {
         break;
       case "rectangle":
       default:
+        stroke(0);
+        strokeWeight(1);
         rectMode(CORNER);
         rect(x, y, w, h);
         break;
     }
 
-    fill(255);
-    noStroke();
-    textAlign(CENTER, CENTER);
-    textSize(20);
+    if (img != null) {
+      imageMode(CORNER);
+      float padding = w * 0.1;
+      image(img, x + padding, y + padding, w - 2 * padding, h - 2 * padding);
+    } else {
+      float textSizeValue = min(w, h) * 0.7;
+      textSize(textSizeValue);
+      if (shapeType.equals("oval") && label.equalsIgnoreCase("play")) {
+        textFont(verdanaFont);
+        fill(#FF69B4);
+      } else {
+        textFont(impactFont);
+        fill(0);
+      }
 
-    switch(shapeType) {
-      case "circle":
-        text(label, x, y);
-        break;
-      case "oval":
-        text(label, x + w / 2, y + h / 2);
-        break;
-      case "square":
-      case "rectangle":
-      default:
-        text(label, x + w / 2, y + h / 2);
-        break;
+      noStroke();
+      textAlign(CENTER, CENTER);
+
+      switch (shapeType) {
+        case "circle":
+          text(label, x, y);
+          break;
+        case "oval":
+          text(label, x + w / 2, y + h / 2);
+          break;
+        case "square":
+        case "rectangle":
+        default:
+          text(label, x + w / 2, y + h / 2);
+          break;
+      }
     }
   }
 
@@ -101,12 +137,14 @@ abstract class Station {
   String name;
   ArrayList<Button> navButtons;
   Button menuButton;
+  Button finishButton;
 
   Station(String name) {
     this.name = name;
     navButtons = new ArrayList<Button>();
     setupNavButtons();
     setupMenuButton();
+    setupFinishButton();
   }
 
   void setupNavButtons() {
@@ -124,7 +162,7 @@ abstract class Station {
       color(#8707B7),   // Build - Purple
       color(#EDE724),   // Mix - Yellow
       color(#3B96F5)    // Toppings - Blue
-     };
+    };
 
     for (int i = 0; i < labels.length; i++) {
       float x = startX + i * (btnWidth + spacing);
@@ -141,11 +179,20 @@ abstract class Station {
     menuButton = new Button(x, y, btnWidth, btnHeight, "Menu");
   }
 
+  void setupFinishButton() {
+    float btnWidth = 140;
+    float btnHeight = 40;
+    float x = width - btnWidth - 20;
+    float y = height - btnHeight - 20;
+    finishButton = new Button(x, y, btnWidth, btnHeight, "Finish Order", "rectangle", color(100, 200, 100));
+  }
+
   void displayNavButtons() {
     for (Button b : navButtons) {
       b.display(mouseX, mouseY);
     }
     menuButton.display(mouseX, mouseY);
+    finishButton.display(mouseX, mouseY);
   }
 
   void checkNavButtonClicks(float mx, float my) {
@@ -155,9 +202,15 @@ abstract class Station {
         return;
       }
     }
-    
+
     if (menuButton.isClicked(mx, my)) {
       handleMenuClick();
+      return;
+    }
+
+    if (finishButton.isClicked(mx, my)) {
+      handleFinishClick();
+      return;
     }
   }
 
@@ -167,9 +220,20 @@ abstract class Station {
   }
 
   void handleMenuClick() {
-    println("Switching to menu screen");
+    println("Switching to menu");
     currentScreen = "menu";
   }
+
+  void handleFinishClick() {
+  if (game.selectedSundae != null && game.selectedCustomer != null) {
+    println("finished");
+    game.finishScreen = new FinishScreen(game.selectedSundae, game.selectedCustomer.order);
+    currentScreen = "finish";
+  } 
+  else {
+    println("No sundae or order selected");
+  }
+}
 
   abstract void display();
   abstract void update();
