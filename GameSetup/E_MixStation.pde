@@ -1,18 +1,16 @@
 class MixStation extends Station {
   ArrayList<Sundae> sundaes;
-
+  Setup game;
   String[] mixTypes = {"Light", "Medium", "Heavy"};
   ArrayList<Button> mixButtons;
-
   int selectedMixIndex = -1; 
   float mixProgress = 0;
-
   float[] mixSpeeds = {0.002f, 0.005f, 0.01f};
 
-  MixStation(ArrayList<Sundae> sundaes) {
+  MixStation(ArrayList<Sundae> sundaes, Setup game) {
     super("Mix");
     this.sundaes = sundaes;
-
+    this.game = game;
     mixButtons = new ArrayList<Button>();
     float btnWidth = 100;
     float btnHeight = 40;
@@ -20,7 +18,6 @@ class MixStation extends Station {
     float totalWidth = mixTypes.length * btnWidth + (mixTypes.length - 1) * spacing;
     float startX = (width - totalWidth) / 2;
     float y = 120;
-
     for (int i = 0; i < mixTypes.length; i++) {
       float x = startX + i * (btnWidth + spacing);
       Button b = new Button(x, y, btnWidth, btnHeight, mixTypes[i]);
@@ -31,21 +28,26 @@ class MixStation extends Station {
   void update() {
     if (selectedMixIndex != -1 && mixProgress < 1.0) {
       mixProgress += mixSpeeds[selectedMixIndex];
-      if (mixProgress > 1.0) {
+      if (game.selectedSundae != null) {
+        game.selectedSundae.mixProgress = mixProgress * game.selectedSundae.targetMixTime;
+      }
+      if (mixProgress >= 1.0) {
         mixProgress = 1.0;
+        if (game.selectedSundae != null) {
+          game.selectedSundae.mixLevel = selectedMixIndex + 1;
+        }
       }
     }
   }
 
+
   void display() {
-    background(230, 230, 255);
+    background(#E6E6FF);
     fill(0);
     textSize(32);
     textAlign(CENTER, CENTER);
     text("Mix Station", width/2, 80);
-
     displayMixProgressBar();
-
     for (int i = 0; i < mixButtons.size(); i++) {
       Button b = mixButtons.get(i);
       if (i == selectedMixIndex) {
@@ -56,10 +58,12 @@ class MixStation extends Station {
       }
       b.display(mouseX, mouseY);
     }
-
     displayNavButtons();
     if (game.selectedCustomer != null) {
     game.selectedCustomer.order.display(width - 220, 20);
+    }
+    if (game.selectedSundae != null) {
+      game.selectedSundae.display(width / 2, height / 2 + 100);
     }
   }
 
@@ -90,9 +94,12 @@ class MixStation extends Station {
       if (b.isClicked(mx, my)) {
         selectedMixIndex = i;
         mixProgress = 0;
+        if (game.selectedSundae != null) {
+          game.selectedSundae.mixLevel = 0;
+          game.selectedSundae.mixProgress = 0;
+        }
         return;
       }
     }
-    // add more mix graphics later
   }
 }
