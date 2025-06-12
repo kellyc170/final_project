@@ -1,13 +1,13 @@
 class Order {
+  int orderNumber;
+  String cupSize;   
+  String syrup;      
+  String flavor;     
+  int mixLevel;      
+  String[] toppings; 
 
-  int orderNumber = 1;
-  String cupSize;    // small, medium, large
-  String syrup;      // chocolate, caramel, strawberry
-  String flavor;     // vanilla, chocolate, strawberry
-  int mixLevel;      // light, medium, heavy
-  String[] toppings; // cherry, sprinkles, whipped cream, oreo, add others later
-
-  Order(String cupSize, String syrup, String flavor, int mixLevel, String[] toppings) {
+  Order(int orderNumber, String cupSize, String syrup, String flavor, int mixLevel, String[] toppings) {
+    this.orderNumber = orderNumber;
     this.cupSize = cupSize;
     this.syrup = syrup;
     this.flavor = flavor;
@@ -42,8 +42,6 @@ class Order {
   void display() {
     float padding = 20;
     float boxWidth = 200;
-    
-    // top right
     float x = width - padding - boxWidth;
     float y = padding;
   
@@ -53,8 +51,8 @@ class Order {
       linesList.add("Topping: " + toppings[i]);
     }
     linesList.add("Mix Level: " + mixLevel);
-    linesList.add("Flavor: " + flavor);
     linesList.add("Syrup: " + syrup);
+    linesList.add("Flavor: " + flavor);
     linesList.add("Cup Size: " + cupSize);
   
     String[] lines = linesList.toArray(new String[0]);
@@ -68,9 +66,9 @@ class Order {
   
     for (int i = 0; i < lines.length; i++) {
       if (i % 2 == 0) {
-        fill(#FFF5FF); // lighter pink
+        fill(#FFF5FF);
       } else {
-        fill(#FFDCF0); // light pink
+        fill(#FFDCF0);
       }
       noStroke();
       float lineY = y + i * lineHeight;
@@ -89,8 +87,8 @@ class Order {
     }
 
     linesList.add("Mix Level: " + mixLevel);
-    linesList.add("Flavor: " + flavor);
     linesList.add("Syrup: " + syrup);
+    linesList.add("Flavor: " + flavor);
     linesList.add("Cup Size: " + cupSize);
 
     String[] lines = linesList.toArray(new String[0]);
@@ -103,15 +101,12 @@ class Order {
     float lineHeight = 28;
     float boxWidth = 200;
 
-
     for (int i = 0; i < lines.length; i++) {
-      // Alternate fill per line
       if (i % 2 == 0) {
-        fill(#FFF5FF); // lighter pink
+        fill(#FFF5FF);
       } else {
-        fill(#FFDCF0); // light pink
+        fill(#FFDCF0);
       }
-
       noStroke();
       float lineY = y + i * lineHeight;
       rect(x - 5, lineY, boxWidth - 10, lineHeight);
