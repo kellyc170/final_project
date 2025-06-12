@@ -2,6 +2,7 @@ class OrderStation extends Station {
   ArrayList<Customer> customers;
   int currentCustomerIndex = 0;
   Customer selectedCustomer = null;
+  boolean showReceipt = false;
 
   OrderStation(ArrayList<Customer> customers) {
     super("Order");
@@ -38,9 +39,9 @@ class OrderStation extends Station {
     
     // Green counter
     strokeWeight(0.75);
-    fill(#5AD154); // bright green
+    fill(#5AD154);
     rect(0, height-200, width, 100);
-    fill(#17A055); // dark green
+    fill(#17A055);
     rect(0, height-110, width, 20);
   
     // light purple wall
@@ -112,16 +113,19 @@ class OrderStation extends Station {
     rect(doorX+doorWidth/2 + inset+2, doorY+doorHeight-3*inset, doorWidth/2-2*inset-3.5, 18.5);
     rect(rightWindowX + 5, windowY + windowHeight-20, windowWidth-9, 16);
   
-    // Show current customer only
+    fill(0);
+    textSize(20);
+    textAlign(LEFT, TOP);
+    text("Day: " + game.dayCount, 20, 20);
+    text("Order Number to Next Day: " + (game.orderCount + 1) + " / 10", 20, 50);
+  
     if (currentCustomerIndex < customers.size()) {
       Customer current = customers.get(currentCustomerIndex);
       current.display();
-  
-      if (selectedCustomer != null) {
+      if (selectedCustomer != null && showReceipt) {
         selectedCustomer.order.display(width - 220, 20);
       }
     }
-  
     displayNavButtons();
   }
   
@@ -129,7 +133,6 @@ class OrderStation extends Station {
     if (currentCustomerIndex < customers.size()) {
       Customer c = customers.get(currentCustomerIndex);
   
-      // Adjust based on your customer display size
       float left = c.x - c.img.width / 4;
       float right = left + 100;
       float top = c.y - c.img.height / 6;
@@ -138,6 +141,7 @@ class OrderStation extends Station {
       if (mx >= left && mx <= right && my >= top && my <= bottom) {
         selectedCustomer = c;
         game.selectedCustomer = c;
+        showReceipt = true; 
       }
     }
   }
